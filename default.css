@@ -19,6 +19,24 @@ body {
     padding-right: 50;
 }
 
+.options {
+    background-color: white;
+    width: 700;
+    padding-top: 20;
+    padding-bottom: 20;
+    padding-left: 50;
+    padding-right: 50;
+}
+
+.threads {
+    background-color: white;
+    width: 700;
+    padding-top: 20;
+    padding-bottom: 20;
+    padding-left: 50;
+    padding-right: 50;
+}
+
 .error {
     color: red;
 }
