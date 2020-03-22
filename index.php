@@ -59,7 +59,11 @@ if (!isset($_SESSION["loggedInUser"])){
                 $thread_array = sqlsrv_query($conn, $query, array());
                 $thread_array = sqlsrv_fetch_array($thread_array); //Convert result to array
 
-                echo nl2br("TITLE: ".$thread_array[2]." TEXT: ".$thread_array[3]." REPLIES: ".$thread_array[5]." AUTHOR: ".$thread_array[4]."\n\n");
+                echo nl2br(
+                    "<a href='view_thread.php?thread_id=$thread_array[0]'>TITLE: $thread_array[2] REPLIES: $thread_array[5]</a>".
+                    " AUTHOR: "."<a href='view_user.php'>$thread_array[4]</a>"."\n\n"
+                );
+                
                 //echo nl2br("TITLE: ".$thread_array[2]." TEXT: ".$thread_array[3]." REPLIES: ".$thread_array[5]." UPDATED: ".date_format($thread_array[6], "Y/m/d h:i:sa")."\n\n");
 
             }
