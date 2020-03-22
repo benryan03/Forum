@@ -1,4 +1,10 @@
 <?php
+
+//If no user is logged in, setLoggedInUser to None
+if (!isset($_SESSION["loggedInUser"])){
+    $_SESSION["loggedInUser"] = "None";
+}
+
 $username = "";
 $password = "";
 $confirmPassword = "";

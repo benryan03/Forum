@@ -1,6 +1,11 @@
 <?php
 session_start();
 
+//If no user is logged in, setLoggedInUser to None
+if (!isset($_SESSION["loggedInUser"])){
+    $_SESSION["loggedInUser"] = "None";
+}
+
 $thread_title = "";
 $thread_text = "";
 date_default_timezone_set("America/New_York");

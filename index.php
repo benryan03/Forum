@@ -5,6 +5,11 @@ $x = "";
 date_default_timezone_set("America/New_York");
 //$timestamp = date("Y/m/d h:i:sa");
 
+//If no user is logged in, setLoggedInUser to None
+if (!isset($_SESSION["loggedInUser"])){
+    $_SESSION["loggedInUser"] = "None";
+}
+
 ?>
 
 <html>
