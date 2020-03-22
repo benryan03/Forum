@@ -52,7 +52,7 @@ if (!empty($_POST["submit"])){
 <center>
 
 <div class="header">
-    <h1><a href="index.php">Log in</a></h1>
+    <h1><a href="index.php">Forum</a></h1>
 </div>
 
 <div class="content">
