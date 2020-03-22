@@ -1,0 +1,71 @@
+<?php
+session_start();
+
+$thread_title = "";
+$thread_text = "";
+date_default_timezone_set("America/New_York");
+$timestamp = date("Y/m/d h:i:sa");
+
+$newPostID = 1; //I will change this later
+
+if (!empty($_POST["submit"])){
+
+    //Still need to sanitize inputs
+
+    //Retreive submitted thread title and text
+    $thread_title = htmlspecialchars($_POST["thread_title"]);
+    $thread_text = htmlspecialchars($_POST["thread_text"]);
+
+    //Connect to database
+    $serverName = "localhost\sqlexpress";
+    $connectionInfo = array("Database"=>"Forum", "UID"=>"ben", "PWD"=>"password123");
+    $conn = sqlsrv_connect($serverName, $connectionInfo);
+
+    //To calculate new thread ID, count number of rows in database and add 1
+    $countExistingThreadsQuery = "SELECT * FROM threads";
+    $countExistingThreads = sqlsrv_query($conn, $countExistingThreadsQuery, array(), array( "Scrollable" => 'static' ));
+    $threads_count = sqlsrv_num_rows( $countExistingThreads );
+    $newThreadID = $threads_count + 1;
+
+    //Write new thread to database
+    $userRegisterQuery = "INSERT INTO threads VALUES ('$newThreadID', '$newPostID', '$thread_title', '$thread_text', '$_SESSION[loggedInUser]', '0', '$timestamp', '$timestamp')";
+    $writeToDatabase = sqlsrv_query($conn, $userRegisterQuery);
+
+    //Open success page
+    header("Location:new_thread_success.php");
+    
+}
+
+?>
+
+<html>
+<head>
+    <title>Welcome to Forum</title>
+    <link rel="stylesheet" type="text/css" href="default.css">
+</head>
+<body>
+    <center>
+
+    <div class="header">
+    <h1><a href="index.php">Forum</a></h1>
+    </div>
+
+    <div class="options">
+        <a href="register.php">Register</a>&nbsp;
+        <a href="login.php">Log in</a>&nbsp;
+        Current user: <?php echo $_SESSION["loggedInUser"] ?>&nbsp;
+        <a href="logout.php">Log out</a>
+    </div>
+
+    <div class="content">
+        New thread<br><br>
+        <form action="? echo $_SERVER["PHP_SELF"]" method="post">
+        <input type="text" name="thread_title" placeholder="Thread title" value="<?php echo htmlentities($thread_title) ?>"><br><br>
+        <textarea name="thread_text" rows="4" cols="50" placeholder="Thread text" value="<?php echo htmlentities($thread_text) ?>"></textarea><br><br>
+        <input type="submit" value="Submit" name="submit"><br>        
+        </form>
+    </div>
+
+    </center>
+</body>
+</html>
