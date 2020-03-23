@@ -51,7 +51,6 @@
 
 <body>
     <center>
-
     <div class="header">
         <h1><a href="index.php">Forum</a></h1>
     </div>
@@ -64,20 +63,27 @@
         <a href="logout.php">Log out</a>
     </div>
 
-    <div class="content">
-
-        
+    <div class="op">
         <?php     
             //Display thread OP
             echo nl2br(
-                "TITLE: ".$thread_array[2].
+                "<h2>TITLE: ".$thread_array[2].
                 " REPLIES: ".$thread_array[5].
-                " AUTHOR: ".$thread_array[4]."\n\n".
+                " AUTHOR: ".$thread_array[4]."\n".
                 "SUBMITTED AT: ".date_format($thread_array[6], "Y/m/d h:i:sa").
-                " UPDATED AT: ".date_format($thread_array[7], "Y/m/d h:i:sa\n\n").
-                "CONTENT: ".$thread_array[3]."\n\n"
+                " UPDATED AT: ".date_format($thread_array[7], "Y/m/d h:i:sa\n").
+                "</h2>CONTENT: ".$thread_array[3]."\n\n"
             );
+        ?>
+    </div>
 
+
+
+
+
+    
+    <div class="comments">
+        <?php
             //Display comments
 
             //Count how many comments are in the the thread
@@ -90,11 +96,10 @@
                 $comment_array_row = sqlsrv_fetch_array($comments_array, SQLSRV_FETCH_NUMERIC); //Select next row                
 
                 echo nl2br(
-                    "-----\n".
-                    "POST ID:".$comment_array_row[0].
+                    "<h2>POST ID:".$comment_array_row[0].
                     " AUTHOR: ".$comment_array_row[3].
-                    " SUBMITTED AT: ".date_format($comment_array_row[4], "Y/m/d h:i:sa\n\n").
-                    " COMMENT TEXT: ".$comment_array_row[2].
+                    " SUBMITTED AT: ".date_format($comment_array_row[4], "Y/m/d h:i:sa")."</h2>".
+                    $comment_array_row[2].
                     "\n\n"
                 );
             }

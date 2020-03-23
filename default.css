@@ -37,6 +37,31 @@ body {
     padding-right: 50;
 }
 
+.op {
+    text-align: left;
+    background-color: white;
+    width: 700;
+    padding-top: 20;
+    padding-bottom: 20;
+    padding-left: 50;
+    padding-right: 50;
+}
+
+.comments {
+    text-align: left;
+    background-color: white;
+    width: 650;
+    padding-top: 20;
+    padding-bottom: 20;
+    padding-left: 100;
+    padding-right: 50;
+}
+
 .error {
     color: red;
+}
+
+h2 {
+    font-size: 12px;
+    font-weight: 100;
 }
