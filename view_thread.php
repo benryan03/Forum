@@ -23,6 +23,7 @@
     $thread_array = sqlsrv_query($conn, $query, array());
     $thread_array = sqlsrv_fetch_array($thread_array); //Convert result to array
 
+    //Needed to avoid error message
     if (!empty($_POST['comment_text'])){
         $comment_text = $_POST['comment_text'];
     }
@@ -39,8 +40,19 @@
         $newPostQuery = "INSERT INTO posts VALUES ('$newPostID', '$thread_id', '$comment_text', '$_SESSION[loggedInUser]', '$timestamp', '$timestamp')";
         $writeToDatabase = sqlsrv_query($conn, $newPostQuery);
 
+        //Query number of existing comments
+        $replyCountQuery = "SELECT reply_count FROM threads WHERE thread_id = '$thread_id' ";
+        $reply_count = sqlsrv_query($conn, $replyCountQuery, array());
+        $reply_count = sqlsrv_fetch_array($reply_count);
+        $reply_count = $reply_count[0];
+
+        //Update comment count and date updated for thread in threads database
+        $reply_count = $reply_count + 1;
+        $threadUpdateQuery = "UPDATE threads SET reply_count = '$reply_count', time_updated = '$timestamp' WHERE thread_id = '$thread_id' ";
+        $writeToDatabase = sqlsrv_query($conn, $threadUpdateQuery);
     }
 
+    print_r(sqlsrv_errors());
 ?>
 
 <html>
@@ -76,12 +88,7 @@
             );
         ?>
     </div>
-
-
-
-
-
-    
+ 
     <div class="comments">
         <?php
             //Display comments
