@@ -10,15 +10,6 @@ body {
     padding-bottom: 5;
 }
 
-.content {
-    background-color: white;
-    width: 700;
-    padding-top: 20;
-    padding-bottom: 20;
-    padding-left: 50;
-    padding-right: 50;
-}
-
 .options {
     background-color: white;
     width: 700;
@@ -28,7 +19,7 @@ body {
     padding-right: 50;
 }
 
-.threads {
+.content {
     background-color: white;
     width: 700;
     padding-top: 20;
@@ -36,6 +27,38 @@ body {
     padding-left: 50;
     padding-right: 50;
 }
+
+/*For index.php*/
+
+.threads {
+    text-align: left;
+    background-color: white;
+    width: 700;
+    padding-top: 20;
+    padding-bottom: 20;
+    padding-left: 50;
+    padding-right: 50;
+}
+
+.thread_title {
+    float: left;
+    text-align: left;
+}
+
+.thread_details {
+    float: right;
+    text-align: right;
+}
+
+.complete_thread {
+    padding: 10;
+}
+
+.thread_title:hover, .thread_details:hover, .complete_thread:hover {
+    background-color: lightgray;
+}
+
+/*For view_thread.php*/
 
 .op {
     text-align: left;
@@ -55,10 +78,6 @@ body {
     padding-bottom: 20;
     padding-left: 100;
     padding-right: 50;
-}
-
-.error {
-    color: red;
 }
 
 h2 {

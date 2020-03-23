@@ -44,37 +44,19 @@ if (!isset($_SESSION["loggedInUser"])){
             $thread_count = sqlsrv_num_rows($result);
             echo nl2br("Total threads: ".$thread_count."\n\n");
 
-
-            /*
-            $query = "SELECT * FROM threads WHERE thread_id = '1' ";
-            $thread_array = sqlsrv_query($conn, $query, array());
-            $thread_array = sqlsrv_fetch_array($thread_array); //Convert result to array
-            //print_r($thread_array);
-            echo "TITLE: ".$thread_array[1]." TEXT: ".$thread_array[2]."\n";
-            */
-
-            
             for ($x = 1; $x < $thread_count + 1; $x++){
                 $query = "SELECT * FROM threads WHERE thread_id = '$x' ";
                 $thread_array = sqlsrv_query($conn, $query, array());
                 $thread_array = sqlsrv_fetch_array($thread_array); //Convert result to array
-
+                
                 echo nl2br(
-                    "<a href='view_thread.php?thread_id=$thread_array[0]'>TITLE: $thread_array[2] REPLIES: $thread_array[5]</a>".
-                    " AUTHOR: "."<a href='view_user.php'>$thread_array[4]</a>"."\n\n"
+                    //Do not change the next 2 lines or all formatting will break :)
+                    '<div class="complete_thread"><span class="thread_title">'."<a href='view_thread.php?thread_id=$thread_array[0]'>$thread_array[2]</a></span><span class='thread_details'>replies: $thread_array[5] by: <a href='view_user.php'>$thread_array[4]</a></span>
+                    </div>"
                 );
                 
                 //echo nl2br("TITLE: ".$thread_array[2]." TEXT: ".$thread_array[3]." REPLIES: ".$thread_array[5]." UPDATED: ".date_format($thread_array[6], "Y/m/d h:i:sa")."\n\n");
-
             }
-            
-
-
-
-            //fetch?
-
-            
-
             print_r(sqlsrv_errors());
         ?>
     </div>
