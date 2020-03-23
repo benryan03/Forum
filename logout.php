@@ -20,14 +20,16 @@ if (!isset($_SESSION["loggedInUser"])){
     <h1><a href="index.php">Forum</a></h1>
     </div>
 
+    <div class="options">
+        <a href="register.php">Register</a>&nbsp;
+        <a href="login.php">Log in</a>&nbsp;
+        <a href="new_thread.php">New thread</a>&nbsp;
+        Current user: <?php echo $_SESSION["loggedInUser"] ?>&nbsp;
+        <a href="logout.php">Log out</a>
+    </div>
+
     <div class="content">
-    <a href="register.php">Register</a>&nbsp;
-    <a href="login.php">Log in</a>&nbsp;
-    Current user: <?php echo $_SESSION["loggedInUser"] ?>&nbsp;
-    Log out<br><br>
-
-    You have been sucessfully logged out.
-
+        You have been sucessfully logged out.
     </div>
 
 

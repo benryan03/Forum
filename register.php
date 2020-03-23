@@ -85,7 +85,7 @@ if (!empty($_POST["submit"])){                  //if submit button clicked, then
         }
         if ($errorStatus == false){
             //Open success page
-            header("Location:register_success.html");
+            header("Location:register_success.php");
         }
 
 
@@ -106,6 +106,14 @@ if (!empty($_POST["submit"])){                  //if submit button clicked, then
 
 <div class="header">
     <h1><a href="index.php">Forum</a></h1>
+</div>
+
+<div class="options">
+    <a href="register.php">Register</a>&nbsp;
+    <a href="login.php">Log in</a>&nbsp;
+    <a href="new_thread.php">New thread</a>&nbsp;
+    Current user: <?php echo $_SESSION["loggedInUser"] ?>&nbsp;
+    <a href="logout.php">Log out</a>
 </div>
 
 <div class="content">

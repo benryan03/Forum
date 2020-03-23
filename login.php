@@ -61,6 +61,14 @@ if (!empty($_POST["submit"])){
     <h1><a href="index.php">Forum</a></h1>
 </div>
 
+<div class="options">
+        <a href="register.php">Register</a>&nbsp;
+        <a href="login.php">Log in</a>&nbsp;
+        <a href="new_thread.php">New thread</a>&nbsp;
+        Current user: <?php echo $_SESSION["loggedInUser"] ?>&nbsp;
+        <a href="logout.php">Log out</a>
+    </div>
+
 <div class="content">
 <form class="register-form action="? echo $_SERVER["PHP_SELF"]" method="post">
 <input type="text" name="username" placeholder="Username" value="<?php echo htmlentities($username) ?>"><br><br>
