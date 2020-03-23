@@ -9,7 +9,7 @@ if (!isset($_SESSION["loggedInUser"])){
 $thread_title = "";
 $thread_text = "";
 date_default_timezone_set("America/New_York");
-$timestamp = date("Y/m/d h:i:sa");
+$timestamp = date("m/d/Y h:ia");
 
 $newPostID = 1; //I will change this later
 

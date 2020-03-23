@@ -2,7 +2,7 @@
     session_start();
 
     date_default_timezone_set("America/New_York");
-    $timestamp = date("Y/m/d h:i:sa");
+    $timestamp = date("m/d/Y h:ia");
     $comment_text = "";
 
     //If no user is logged in, setLoggedInUser to None
@@ -105,7 +105,7 @@
                 echo nl2br(
                     "<h2><i>post id:".$comment_array_row[0].
                     " | by: ".$comment_array_row[3].
-                    " | submitted: ".date_format($thread_array[6], "m/d/Y h:ia")."</i></h2>".
+                    " | submitted: ".date_format($comment_array_row[4], "m/d/Y h:ia")."</i></h2>".
                     $comment_array_row[2].
                     "\n\n"
                 );
