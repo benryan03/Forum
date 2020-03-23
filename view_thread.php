@@ -79,12 +79,12 @@
         <?php     
             //Display thread OP
             echo nl2br(
-                "<h2>TITLE: ".$thread_array[2].
-                " REPLIES: ".$thread_array[5].
-                " AUTHOR: ".$thread_array[4]."\n".
-                "SUBMITTED AT: ".date_format($thread_array[6], "Y/m/d h:i:sa").
-                " UPDATED AT: ".date_format($thread_array[7], "Y/m/d h:i:sa\n").
-                "</h2>CONTENT: ".$thread_array[3]."\n\n"
+                "<h2>".$thread_array[2].
+                "<i> | ".$thread_array[5]." replies |".
+                " by: ".$thread_array[4]." | ".
+                "submitted: ".date_format($thread_array[6], "m/d/Y h:ia")." | ".
+                " updated: ".date_format($thread_array[7], "m/d/Y h:ia\n").
+                "</i></h2>".$thread_array[3]."\n"
             );
         ?>
     </div>
@@ -103,9 +103,9 @@
                 $comment_array_row = sqlsrv_fetch_array($comments_array, SQLSRV_FETCH_NUMERIC); //Select next row                
 
                 echo nl2br(
-                    "<h2>POST ID:".$comment_array_row[0].
-                    " AUTHOR: ".$comment_array_row[3].
-                    " SUBMITTED AT: ".date_format($comment_array_row[4], "Y/m/d h:i:sa")."</h2>".
+                    "<h2><i>post id:".$comment_array_row[0].
+                    " | by: ".$comment_array_row[3].
+                    " | submitted: ".date_format($thread_array[6], "m/d/Y h:ia")."</i></h2>".
                     $comment_array_row[2].
                     "\n\n"
                 );
