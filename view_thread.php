@@ -4,6 +4,8 @@
     date_default_timezone_set("America/New_York");
     $timestamp = date("m/d/Y h:ia");
     $comment_text = "";
+    $comment_error = "";
+    $errorStatus = false;
 
     //If no user is logged in, setLoggedInUser to None
     if (!isset($_SESSION["loggedInUser"])){
@@ -23,34 +25,47 @@
     $thread_array = sqlsrv_query($conn, $query, array());
     $thread_array = sqlsrv_fetch_array($thread_array); //Convert result to array
 
-    //Needed to avoid error message
-    if (!empty($_POST['comment_text'])){
-        $comment_text = $_POST['comment_text'];
+    if (!empty($_POST['submit'])){
+
+        //Retrieve and sanitize submitted comment
+        $comment_text = htmlspecialchars($_POST['comment_text']);
+
+        //Validate comment
+        if ($comment_text == ""){
+            $comment_error = "Error: Comment cannot be empty";
+            $errorStatus = true;
+        }
+        if (strlen($comment_text) > 1000){
+            $comment_error = "Error: Maximum length 1000 characters (current: ".strlen($comment_text).")";
+            $errorStatus = true;
+        }
+
+        if ($errorStatus == false){
+            //Write comment to database
+                
+            //To calculate new comment ID, count number of rows in database and add 1
+            $countExistingPostsQuery = "SELECT * FROM posts";
+            $countExistingPosts = sqlsrv_query($conn, $countExistingPostsQuery, array(), array( "Scrollable" => 'static' ));
+            $posts_count = sqlsrv_num_rows( $countExistingPosts );
+            $newPostID = $posts_count + 1;
+    
+            //Write new comment to database
+            $newPostQuery = "INSERT INTO posts VALUES ('$newPostID', '$thread_id', '$comment_text', '$_SESSION[loggedInUser]', '$timestamp', '$timestamp')";
+            $writeToDatabase = sqlsrv_query($conn, $newPostQuery);
+    
+            //Query number of existing comments
+            $replyCountQuery = "SELECT reply_count FROM threads WHERE thread_id = '$thread_id' ";
+            $reply_count = sqlsrv_query($conn, $replyCountQuery, array());
+            $reply_count = sqlsrv_fetch_array($reply_count);
+            $reply_count = $reply_count[0];
+    
+            //Update comment count and date updated for thread in threads database
+            $reply_count = $reply_count + 1;
+            $threadUpdateQuery = "UPDATE threads SET reply_count = '$reply_count', time_updated = '$timestamp' WHERE thread_id = '$thread_id' ";
+            $writeToDatabase = sqlsrv_query($conn, $threadUpdateQuery);
+        }
     }
-    if ($comment_text != ""){
-        //Write comment to database
-            
-        //To calculate new comment ID, count number of rows in database and add 1
-        $countExistingPostsQuery = "SELECT * FROM posts";
-        $countExistingPosts = sqlsrv_query($conn, $countExistingPostsQuery, array(), array( "Scrollable" => 'static' ));
-        $posts_count = sqlsrv_num_rows( $countExistingPosts );
-        $newPostID = $posts_count + 1;
 
-        //Write new comment to database
-        $newPostQuery = "INSERT INTO posts VALUES ('$newPostID', '$thread_id', '$comment_text', '$_SESSION[loggedInUser]', '$timestamp', '$timestamp')";
-        $writeToDatabase = sqlsrv_query($conn, $newPostQuery);
-
-        //Query number of existing comments
-        $replyCountQuery = "SELECT reply_count FROM threads WHERE thread_id = '$thread_id' ";
-        $reply_count = sqlsrv_query($conn, $replyCountQuery, array());
-        $reply_count = sqlsrv_fetch_array($reply_count);
-        $reply_count = $reply_count[0];
-
-        //Update comment count and date updated for thread in threads database
-        $reply_count = $reply_count + 1;
-        $threadUpdateQuery = "UPDATE threads SET reply_count = '$reply_count', time_updated = '$timestamp' WHERE thread_id = '$thread_id' ";
-        $writeToDatabase = sqlsrv_query($conn, $threadUpdateQuery);
-    }
 
     print_r(sqlsrv_errors());
 ?>
@@ -113,7 +128,8 @@
         ?><br><br>
 
         <form action="?thread_id=<?php echo $thread_id ?>&<?php echo $_SERVER["PHP_SELF"] ?>" method="post">
-            <textarea name="comment_text" rows="4" cols="50" placeholder="Add comment" value="<?php echo htmlentities($thread_text) ?>"></textarea><br><br>
+            <textarea name="comment_text" rows="4" cols="50" placeholder="Add comment"><?php echo htmlentities($comment_text) ?></textarea><br>
+            <div class="error" id="comment_error"><?php echo ($comment_error) ?></div><br>
             <input type="submit" value="Submit" name="submit"><br>        
         </form>
     </div>
