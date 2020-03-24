@@ -28,6 +28,11 @@ body {
     padding-right: 50;
 }
 
+.error {
+    color: red;
+    font-size: 15px;
+}
+
 /*For index.php*/
 
 .threads {
