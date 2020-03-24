@@ -66,7 +66,6 @@
         }
     }
 
-
     print_r(sqlsrv_errors());
 ?>
 
@@ -96,7 +95,7 @@
             echo nl2br(
                 "<h2>".$thread_array[2].
                 "<i> | ".$thread_array[5]." replies |".
-                " by: ".$thread_array[4]." | ".
+                " by: <a href='view_user.php?selectedUser=$thread_array[4]'>".$thread_array[4]."</a>"." | ".
                 "submitted: ".date_format($thread_array[6], "m/d/Y h:ia")." | ".
                 " updated: ".date_format($thread_array[7], "m/d/Y h:ia\n").
                 "</i></h2>".$thread_array[3]."\n"
@@ -119,7 +118,7 @@
 
                 echo nl2br(
                     "<h2><i>post id:".$comment_array_row[0].
-                    " | by: ".$comment_array_row[3].
+                    " | by: <a href='view_user.php?selectedUser=$thread_array[4]'>".$comment_array_row[3]."</a>".
                     " | submitted: ".date_format($comment_array_row[4], "m/d/Y h:ia")."</i></h2>".
                     $comment_array_row[2].
                     "\n\n"
