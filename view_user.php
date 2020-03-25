@@ -53,12 +53,21 @@
     <div class="view_user_threads">
         Threads:<br>
         <?php
+
             //Display threads
             for ($x = 1; $x < $thread_count + 1; $x++){
-                $thread_array_row = sqlsrv_fetch_array($threadsArray, SQLSRV_FETCH_NUMERIC); //Select next row                
+
+                $thread_array_row = sqlsrv_fetch_array($threadsArray, SQLSRV_FETCH_NUMERIC); //Select next row
+                
+                //If thread title will overflow its space, shorten it
+                $threadTitle = trim($thread_array_row[2]); //Remove whitespace from beginning and end of array item
+                if ( strlen($threadTitle) > 42) {
+                    $threadTitle = substr($threadTitle, 0, 42)."...";
+                }
+
                 echo nl2br(
                     //Do not change the next 2 lines or all formatting will break :)
-                    '<div class="complete_thread"><span class="thread_title">'."<a href='view_thread.php?thread_id=$thread_array_row[0]'>$thread_array_row[2]</a></span><span class='thread_details'>replies: $thread_array_row[5] by: <a href='view_user.php?selectedUser=$thread_array_row[4]'>$thread_array_row[4]</a></span>
+                    '<div class="complete_thread"><span class="thread_title">'."<a href='view_thread.php?thread_id=$thread_array_row[0]'>$threadTitle</a></span><span class='thread_details'>replies: $thread_array_row[5] by: <a href='view_user.php?selectedUser=$thread_array_row[4]'>$thread_array_row[4]</a></span>
                     </div>"
                 );    
             }
@@ -74,11 +83,10 @@
                 echo nl2br(
                     "<h2><i>post id:".$comment_array_row[0].
                     " | submitted: ".date_format($comment_array_row[4], "m/d/Y h:ia")."</i></h2>".
-                    $comment_array_row[2].
+                    $comment_array_row[2]. //Comment text
                     "\n\n"
                 );
             }
-
         ?>
     </div>
 
