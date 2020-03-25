@@ -79,9 +79,24 @@
             //Display comments
             for ($x = 1; $x < $comment_count + 1; $x++){
                 $comment_array_row = sqlsrv_fetch_array($commentsArray, SQLSRV_FETCH_NUMERIC); //Select next row                
+                
+                
+                //Query threads database for title of thread that comment is in
+                $query = "SELECT title FROM threads WHERE thread_id = '$comment_array_row[1]'";
+                $threadsArray = sqlsrv_query($conn, $query, array(), array( "Scrollable" => 'static'));
+                $threadTitle2 = sqlsrv_fetch_array($threadsArray);
+                $threadTitle2 = $threadTitle2[0];
 
+                //If thread title will overflow its space, shorten it
+                $threadTitle2 = trim($threadTitle2); //Remove whitespace from beginning and end of array item
+                if ( strlen($threadTitle2) > 42) {
+                    $threadTitle2 = substr($threadTitle2, 0, 42)."...";
+                }
+                         
+                //Display comment
                 echo nl2br(
-                    "<h2><i>post id:".$comment_array_row[0].
+                    "<h2><i>in thread: <a href='view_thread.php?thread_id=$comment_array_row[1]'>".$threadTitle2."</a>\n".
+                    "post id:".$comment_array_row[0].
                     " | submitted: ".date_format($comment_array_row[4], "m/d/Y h:ia")."</i></h2>".
                     $comment_array_row[2]. //Comment text
                     "\n\n"
