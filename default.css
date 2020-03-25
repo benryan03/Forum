@@ -89,3 +89,25 @@ h2 {
     font-size: 12px;
     font-weight: 100;
 }
+
+/* For view_user.php */
+
+.view_user_comments {
+    text-align: left;
+    background-color: white;
+    width: 680;
+    padding-top: 20;
+    padding-bottom: 20;
+    padding-left: 60;
+    padding-right: 60;
+}
+
+.view_user_threads {
+    text-align: left;
+    background-color: white;
+    width: 700;
+    padding-top: 20;
+    padding-bottom: 20;
+    padding-left: 50;
+    padding-right: 50;
+}
