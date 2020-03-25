@@ -48,19 +48,23 @@ if (!isset($_SESSION["loggedInUser"])){
                 $query = "SELECT * FROM threads WHERE thread_id = '$x' ";
                 $thread_array = sqlsrv_query($conn, $query, array());
                 $thread_array = sqlsrv_fetch_array($thread_array); //Convert result to array
-                
+                $threadTitle = trim($thread_array[2]); //Remove whitespace from beginning and end of array item
+
+                //If thread title will overflow its space, shorten it
+                if ( strlen($threadTitle) > 42) {
+                    $threadTitle = substr($threadTitle, 0, 42)."...";
+                }
+
                 echo nl2br(
                     //Do not change the next 2 lines or all formatting will break :)
-                    '<div class="complete_thread"><span class="thread_title">'."<a href='view_thread.php?thread_id=$thread_array[0]'>$thread_array[2]</a></span><span class='thread_details'>replies: $thread_array[5] by: <a href='view_user.php?selectedUser=$thread_array[4]'>$thread_array[4]</a></span>
+                    '<div class="complete_thread"><span class="thread_title">'."<a href='view_thread.php?thread_id=$thread_array[0]'>$threadTitle</a></span><span class='thread_details'>replies: $thread_array[5] by: <a href='view_user.php?selectedUser=$thread_array[4]'>$thread_array[4]</a></span>
                     </div>"
                 );
-                
-                //echo nl2br("TITLE: ".$thread_array[2]." TEXT: ".$thread_array[3]." REPLIES: ".$thread_array[5]." UPDATED: ".date_format($thread_array[6], "Y/m/d h:i:sa")."\n\n");
+
             }
             print_r(sqlsrv_errors());
         ?>
     </div>
-
 
     </center>
 </body>
