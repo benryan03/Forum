@@ -25,6 +25,11 @@
     $thread_array = sqlsrv_query($conn, $query, array());
     $thread_array = sqlsrv_fetch_array($thread_array); //Convert result to array
 
+    $editLink = "";
+    if ($_SESSION["loggedInUser"] = $thread_array[4]){
+        $editLink = "<a href='index.php'>Edit</a>";
+    }
+
     if (!empty($_POST['submit'])){
 
         //Retrieve and sanitize submitted comment
@@ -97,7 +102,7 @@
                 "<i> | ".$thread_array[5]." replies |".
                 " by: <a href='view_user.php?selectedUser=$thread_array[4]'>".$thread_array[4]."</a>"." | ".
                 "submitted: ".date_format($thread_array[6], "m/d/Y h:ia")." | ".
-                " updated: ".date_format($thread_array[7], "m/d/Y h:ia\n").
+                $editLink.
                 "</i></h2>".$thread_array[3]."\n"
             );
         ?>
@@ -119,7 +124,8 @@
                 echo nl2br(
                     "<h2><i>post id:".$comment_array_row[0].
                     " | by: <a href='view_user.php?selectedUser=$thread_array[4]'>".$comment_array_row[3]."</a>".
-                    " | submitted: ".date_format($comment_array_row[4], "m/d/Y h:ia")."</i></h2>".
+                    " | submitted: ".date_format($comment_array_row[4], "m/d/Y h:ia").
+                    " | ".$editLink."</i></h2>".
                     $comment_array_row[2].
                     "\n\n"
                 );
