@@ -77,6 +77,7 @@ body {
 
 .comments {
     text-align: left;
+    word-wrap: break-word;
     background-color: white;
     width: 650;
     padding-top: 20;
@@ -100,6 +101,7 @@ h2 {
     padding-bottom: 20;
     padding-left: 60;
     padding-right: 60;
+    word-wrap: break-word;
 }
 
 .view_user_threads {
