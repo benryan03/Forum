@@ -26,8 +26,8 @@
     $thread_array = sqlsrv_fetch_array($thread_array); //Convert result to array
 
     $editLink = "";
-    if ($_SESSION["loggedInUser"] = $thread_array[4]){
-        $editLink = "<a href='index.php'>Edit</a>";
+    if ($_SESSION["loggedInUser"] == trim($thread_array[4])){
+        $editLink = " | <a href='index.php'>Edit</a>";
     }
 
     if (!empty($_POST['submit'])){
@@ -100,8 +100,8 @@
             echo nl2br(
                 "<h2>".$thread_array[2].
                 "<i> | ".$thread_array[5]." replies |".
-                " by: <a href='view_user.php?selectedUser=$thread_array[4]'>".$thread_array[4]."</a>"." | ".
-                "submitted: ".date_format($thread_array[6], "m/d/Y h:ia")." | ".
+                " by: <a href='view_user.php?selectedUser=$thread_array[4]'>".trim($thread_array[4])."</a>"." | ".
+                "submitted: ".date_format($thread_array[6], "m/d/Y h:ia").
                 $editLink.
                 "</i></h2>".$thread_array[3]."\n"
             );
@@ -123,9 +123,9 @@
 
                 echo nl2br(
                     "<h2><i>post id:".$comment_array_row[0].
-                    " | by: <a href='view_user.php?selectedUser=$thread_array[4]'>".$comment_array_row[3]."</a>".
+                    " | by: <a href='view_user.php?selectedUser=$thread_array[4]'>".trim($comment_array_row[3])."</a>".
                     " | submitted: ".date_format($comment_array_row[4], "m/d/Y h:ia").
-                    " | ".$editLink."</i></h2>".
+                    $editLink."</i></h2>".
                     $comment_array_row[2].
                     "\n\n"
                 );
