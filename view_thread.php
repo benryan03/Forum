@@ -56,7 +56,7 @@
             $newPostID = $posts_count + 1;
     
             //Write new comment to database
-            $newPostQuery = "INSERT INTO posts VALUES ('$newPostID', '$thread_id', '$comment_text', '$_SESSION[loggedInUser]', '$timestamp', '$timestamp')";
+            $newPostQuery = "INSERT INTO posts VALUES ('$newPostID', '$thread_id', '$comment_text', '$_SESSION[loggedInUser]', '$timestamp', '$timestamp', '0')";
             $writeToDatabase = sqlsrv_query($conn, $newPostQuery);
     
             //Query number of existing comments
@@ -90,7 +90,7 @@
 
         if ($errorStatus == false){
             //Write edit to database
-            $editPostQuery = "UPDATE posts SET post_text = '$edit_text', date_updated = '$timestamp' WHERE post_id = '$edited_post_id'";
+            $editPostQuery = "UPDATE posts SET post_text = '$edit_text', date_updated = '$timestamp', edited_status = '1' WHERE post_id = '$edited_post_id'";
             $writeToDatabase = sqlsrv_query($conn, $editPostQuery);
         }
     }
@@ -142,8 +142,6 @@
     <div class="comments">
         <?php
 
-            //$thread_id = $_GET['thread_id'];
-
             //Display comments
 
             //Count how many comments are in the the thread
@@ -166,7 +164,14 @@
                     "<h2><i>post id:".$comment_array_row[0].
                     " | by: <a href='view_user.php?selectedUser=$thread_array[4]'>".trim($comment_array_row[3])."</a>".
                     " | submitted: ".date_format($comment_array_row[4], "m/d/Y h:ia").
-                    $editLink."</i></h2>");
+                    $editLink."</i>\n");
+
+                if ($comment_array_row[6] == "1"){ //If comment has been edited
+                    echo "<b>Edited at ".date_format($comment_array_row[5], "m/d/Y h:ia")."</b></h2>";
+                }
+                else{
+                    echo "</h2>";
+                }
 
                 //Need to make sure that correct user has clicked the edit link
 
@@ -183,10 +188,7 @@
                 }
                 else{
                     echo nl2br(trim($comment_array_row[2])."\n\n");
-                }
-
-
-                
+                }   
             }
         ?><br><br>
 
