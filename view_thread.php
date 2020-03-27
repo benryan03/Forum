@@ -31,7 +31,6 @@
 
     }
 
-
     if (!empty($_POST['submit'])){
 
         //Retrieve and sanitize submitted comment
@@ -74,9 +73,27 @@
     }
 
     if (!empty($_POST['submit_edit'])){
-        //DB edit code goes here
-    }
 
+        //Retrieve and sanitize submitted comment
+        $edit_text = htmlspecialchars($_POST['edit_text']);
+        $edited_post_id = $_GET['edited_post_id'];
+
+        //Validate comment
+        if ($edit_text == ""){
+            $comment_error = "Error: Comment cannot be empty";
+            $errorStatus = true;
+        }
+        if (strlen($edit_text) > 1000){
+            $comment_error = "Error: Maximum length 1000 characters (current: ".strlen($edit_text).")";
+            $errorStatus = true;
+        }
+
+        if ($errorStatus == false){
+            //Write edit to database
+            $editPostQuery = "UPDATE posts SET post_text = '$edit_text', date_updated = '$timestamp' WHERE post_id = '$edited_post_id'";
+            $writeToDatabase = sqlsrv_query($conn, $editPostQuery);
+        }
+    }
 
     print_r(sqlsrv_errors());
 ?>
@@ -124,6 +141,9 @@
  
     <div class="comments">
         <?php
+
+            //$thread_id = $_GET['thread_id'];
+
             //Display comments
 
             //Count how many comments are in the the thread
@@ -148,21 +168,21 @@
                     " | submitted: ".date_format($comment_array_row[4], "m/d/Y h:ia").
                     $editLink."</i></h2>");
 
-                //Make sure that correct user has clicked the edit link
+                //Need to make sure that correct user has clicked the edit link
 
                 //If edit link has been clicked, display text box to edit comment
                 if (isset($_GET['post_id']) && $_GET['post_id'] == $comment_array_row[0] && isset($_GET['editClicked'])){
                     echo nl2br(
-                        '<form action="?edited_post_id=$comment_array_row[0] method="post">'.
-                        '<textarea name="comment_text" rows="4" cols="50" >'.
-                        htmlentities($comment_array_row[2]).'</textarea><br>'.
+                        '<form action="?thread_id='.$thread_id.'&edited_post_id='.$comment_array_row[0].'" method="post">'.
+                        '<textarea name="edit_text" rows="4" cols="50" >'.
+                        htmlentities(trim($comment_array_row[2])).'</textarea><br>'.
                         '<div class="error" id="comment_error">'.$comment_error.'</div><br>'.
                         '<input type="submit" value="Submit" name="submit_edit">'.
                         '</form>'
                     );
                 }
                 else{
-                    echo nl2br($comment_array_row[2]."\n\n");
+                    echo nl2br(trim($comment_array_row[2])."\n\n");
                 }
 
 
