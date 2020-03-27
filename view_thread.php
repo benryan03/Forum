@@ -25,10 +25,12 @@
     $thread_array = sqlsrv_query($conn, $query, array());
     $thread_array = sqlsrv_fetch_array($thread_array); //Convert result to array
 
-    $editLink = "";
-    if ($_SESSION["loggedInUser"] == trim($thread_array[4])){
-        $editLink = " | <a href='index.php'>Edit</a>";
+    //For editing posts
+    if (isset($_GET['editClicked'])){
+        $post_id = $_GET['post_id'];
+
     }
+
 
     if (!empty($_POST['submit'])){
 
@@ -71,6 +73,11 @@
         }
     }
 
+    if (!empty($_POST['submit_edit'])){
+        //DB edit code goes here
+    }
+
+
     print_r(sqlsrv_errors());
 ?>
 
@@ -96,13 +103,20 @@
 
     <div class="op">
         <?php     
+
+            /*
+            $editLink = "";
+            if ($_SESSION["loggedInUser"] == trim($thread_array[4])){
+                $editLink = " | <a href='?thread_id=$thread_id&post_id='op'[0]&editClicked=true'>Edit</a>";
+            }*/
+        
             //Display thread OP
             echo nl2br(
                 "<h2>".$thread_array[2].
                 "<i> | ".$thread_array[5]." replies |".
                 " by: <a href='view_user.php?selectedUser=$thread_array[4]'>".trim($thread_array[4])."</a>"." | ".
                 "submitted: ".date_format($thread_array[6], "m/d/Y h:ia").
-                $editLink.
+                //$editLink.
                 "</i></h2>".$thread_array[3]."\n"
             );
         ?>
@@ -121,14 +135,38 @@
             for ($x = 1; $x < $posts_count + 1; $x++){
                 $comment_array_row = sqlsrv_fetch_array($comments_array, SQLSRV_FETCH_NUMERIC); //Select next row                
 
+                //Define edit link for each comment, with individual comment ID
+                $editLink = "";
+                if ($_SESSION["loggedInUser"] == trim($comment_array_row[3])){
+                    $editLink = " | <a href='?thread_id=$thread_id&post_id=$comment_array_row[0]&editClicked=true'>Edit</a>";
+                }
+
+                //Display comment metadata
                 echo nl2br(
                     "<h2><i>post id:".$comment_array_row[0].
                     " | by: <a href='view_user.php?selectedUser=$thread_array[4]'>".trim($comment_array_row[3])."</a>".
                     " | submitted: ".date_format($comment_array_row[4], "m/d/Y h:ia").
-                    $editLink."</i></h2>".
-                    $comment_array_row[2].
-                    "\n\n"
-                );
+                    $editLink."</i></h2>");
+
+                //Make sure that correct user has clicked the edit link
+
+                //If edit link has been clicked, display text box to edit comment
+                if (isset($_GET['post_id']) && $_GET['post_id'] == $comment_array_row[0] && isset($_GET['editClicked'])){
+                    echo nl2br(
+                        '<form action="?edited_post_id=$comment_array_row[0] method="post">'.
+                        '<textarea name="comment_text" rows="4" cols="50" >'.
+                        htmlentities($comment_array_row[2]).'</textarea><br>'.
+                        '<div class="error" id="comment_error">'.$comment_error.'</div><br>'.
+                        '<input type="submit" value="Submit" name="submit_edit">'.
+                        '</form>'
+                    );
+                }
+                else{
+                    echo nl2br($comment_array_row[2]."\n\n");
+                }
+
+
+                
             }
         ?><br><br>
 
