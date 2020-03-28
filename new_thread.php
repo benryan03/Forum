@@ -54,7 +54,7 @@ if (!empty($_POST["submit"])){
         $newThreadID = $threads_count + 1;
 
         //Write new thread to database
-        $userRegisterQuery = "INSERT INTO threads VALUES ('$newThreadID', '$newPostID', '$thread_title', '$thread_text', '$_SESSION[loggedInUser]', '0', '$timestamp', '$timestamp')";
+        $userRegisterQuery = "INSERT INTO threads VALUES ('$newThreadID', '$newPostID', '$thread_title', '$thread_text', '$_SESSION[loggedInUser]', '0', '$timestamp', '$timestamp', '0')";
         $writeToDatabase = sqlsrv_query($conn, $userRegisterQuery);
 
         //Open success page
