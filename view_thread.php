@@ -1,4 +1,4 @@
- <?php
+<?php
     session_start();
 
     //If no user is logged in, setLoggedInUser to None
@@ -10,7 +10,10 @@
     $comment_text = "";
     $comment_error = "";
     $edit_op_text = "";
+    $op_error = " ";
     $errorStatus = false;
+    $opErrorStatus = false;
+    $opEditSubmitted = false;
 
     //Get thread ID from previous link
     $thread_id = $_GET['thread_id'];
@@ -20,7 +23,7 @@
     $connectionInfo = array("Database"=>"Forum", "UID"=>"ben", "PWD"=>"password123");
     $conn = sqlsrv_connect($serverName, $connectionInfo);
 
-    //For editing posts
+    //For editing comments
     if (isset($_GET['editClicked'])){
         $post_id = $_GET['post_id'];}
 
@@ -65,18 +68,19 @@
     if (!empty($_POST['submit_edit_op'])){ //When OP edit is submitted
 
         //Retrieve and sanitize the edit
-        $edit_op_text = htmlspecialchars($_POST['edit_op_text']);
+        $op_text = htmlspecialchars($_POST['edit_op_text']);
 
         //Validate edit
-        if ($edit_op_text == ""){
-            //$comment_error = "Error: Comment cannot be empty";
-            $errorStatus = true;}
-        if (strlen($edit_op_text) > 1000){
-            //$comment_error = "Error: Maximum length 1000 characters (current: ".strlen($edit_text).")";
-            $errorStatus = true;}
+        if ($op_text == ""){
+            $op_error = "Error: Post cannot be empty";
+            $opErrorStatus = true;}
+        if (strlen($op_text) > 1000){
+            $op_error = "Error: Maximum length 1000 characters (current: ".strlen($op_text).")";
+            $opErrorStatus = true;}
 
-        if ($errorStatus == false){ //Write edit to database
-            $editOPQuery = "UPDATE threads SET op_text = '$edit_op_text', time_updated = '$timestamp', edited_status = '1' WHERE thread_id = '$thread_id'";
+        if ($opErrorStatus == false){ //Write edit to database
+            $opEditSubmitted = true;
+            $editOPQuery = "UPDATE threads SET op_text = '$op_text', time_updated = '$timestamp', edited_status = '1' WHERE thread_id = '$thread_id'";
             $writeToDatabase = sqlsrv_query($conn, $editOPQuery);}
     }
 
@@ -128,6 +132,7 @@
             $query = "SELECT * FROM threads WHERE thread_id = '$thread_id' "; //Query updated OP        
             $thread_array = sqlsrv_query($conn, $query, array());
             $thread_array = sqlsrv_fetch_array($thread_array); //Convert result to array   
+            $op_text = $thread_array[3];
 
             //Define edit link for OP
             $editLink = "";
@@ -152,13 +157,17 @@
             //Still need to make sure that correct user has clicked the edit link
 
             //If edit link has been clicked, display text box to edit comment
-            if (isset($_GET['editOPClicked']) && $edit_op_text == ""){   
+            if (isset($_GET['editOPClicked']) && $opEditSubmitted == false || $opErrorStatus == true){   
+                
+                //If comment did not pass validation, keep it in text box
+                if (isset($_POST['edit_op_text'])){
+                    $op_text = htmlspecialchars($_POST['edit_op_text']);}
 
                 echo nl2br(
                     '<form <action="?thread_id='.$thread_id.'&editOPSubmitted" method="post">'.
                     '<textarea name="edit_op_text" rows="4" cols="50" >'.
-                    htmlentities(trim($thread_array[3])).'</textarea><br>'.
-                    '<div class="error" id="comment_error">'.$comment_error.'</div><br>'.
+                    htmlentities(trim($op_text)).'</textarea><br>'.
+                    '<div class="error" id="op_error">'.$op_error.'</div><br>'.
                     '<input type="submit" value="Submit" name="submit_edit_op">'.
                     '</form>');}
             else{
