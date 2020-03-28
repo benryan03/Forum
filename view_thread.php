@@ -23,7 +23,7 @@
     $connectionInfo = array("Database"=>"Forum", "UID"=>"ben", "PWD"=>"password123");
     $conn = sqlsrv_connect($serverName, $connectionInfo);
 
-    //For editing posts
+    //For editing comments
     if (isset($_GET['editClicked'])){
         $post_id = $_GET['post_id'];}
 
@@ -72,7 +72,7 @@
 
         //Validate edit
         if ($op_text == ""){
-            $op_error = "Error: Comment cannot be empty";
+            $op_error = "Error: Post cannot be empty";
             $opErrorStatus = true;}
         if (strlen($op_text) > 1000){
             $op_error = "Error: Maximum length 1000 characters (current: ".strlen($op_text).")";
@@ -132,6 +132,7 @@
             $query = "SELECT * FROM threads WHERE thread_id = '$thread_id' "; //Query updated OP        
             $thread_array = sqlsrv_query($conn, $query, array());
             $thread_array = sqlsrv_fetch_array($thread_array); //Convert result to array   
+            $op_text = $thread_array[3];
 
             //Define edit link for OP
             $editLink = "";
@@ -158,10 +159,14 @@
             //If edit link has been clicked, display text box to edit comment
             if (isset($_GET['editOPClicked']) && $opEditSubmitted == false || $opErrorStatus == true){   
                 
+                //If comment did not pass validation, keep it in text box
+                if (isset($_POST['edit_op_text'])){
+                    $op_text = htmlspecialchars($_POST['edit_op_text']);}
+
                 echo nl2br(
                     '<form <action="?thread_id='.$thread_id.'&editOPSubmitted" method="post">'.
                     '<textarea name="edit_op_text" rows="4" cols="50" >'.
-                    htmlentities(trim($thread_array[3])).'</textarea><br>'.
+                    htmlentities(trim($op_text)).'</textarea><br>'.
                     '<div class="error" id="op_error">'.$op_error.'</div><br>'.
                     '<input type="submit" value="Submit" name="submit_edit_op">'.
                     '</form>');}
