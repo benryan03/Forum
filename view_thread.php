@@ -1,4 +1,4 @@
- <?php
+<?php
     session_start();
 
     //If no user is logged in, setLoggedInUser to None
@@ -13,6 +13,7 @@
     $op_error = " ";
     $errorStatus = false;
     $opErrorStatus = false;
+    $opEditSubmitted = false;
 
     //Get thread ID from previous link
     $thread_id = $_GET['thread_id'];
@@ -78,6 +79,7 @@
             $opErrorStatus = true;}
 
         if ($opErrorStatus == false){ //Write edit to database
+            $opEditSubmitted = true;
             $editOPQuery = "UPDATE threads SET op_text = '$op_text', time_updated = '$timestamp', edited_status = '1' WHERE thread_id = '$thread_id'";
             $writeToDatabase = sqlsrv_query($conn, $editOPQuery);}
     }
@@ -154,8 +156,8 @@
             //Still need to make sure that correct user has clicked the edit link
 
             //If edit link has been clicked, display text box to edit comment
-            if (isset($_GET['editOPClicked']) || $opErrorStatus == true){   
-
+            if (isset($_GET['editOPClicked']) && $opEditSubmitted == false || $opErrorStatus == true){   
+                
                 echo nl2br(
                     '<form <action="?thread_id='.$thread_id.'&editOPSubmitted" method="post">'.
                     '<textarea name="edit_op_text" rows="4" cols="50" >'.
