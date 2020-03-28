@@ -58,7 +58,7 @@ if (!empty($_POST["submit"])){
         $writeToDatabase = sqlsrv_query($conn, $userRegisterQuery);
 
         //Open success page
-        header("Location:new_thread_success.php");
+        header("Location:view_thread.php?thread_id=$newThreadID");
     }
 }
 
