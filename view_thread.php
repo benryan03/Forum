@@ -65,8 +65,8 @@
 
     if (!empty($_POST['submit_edit_op'])){ //When OP edit is submitted
 
-        //Retrieve the edit
-        $op_text = $_POST['edit_op_text'];
+        //Retrieve and sanitize the edit
+        $op_text = htmlspecialchars($_POST['edit_op_text']);
 
         //Validate edit
         if ($op_text == ""){
@@ -164,7 +164,7 @@
                 echo nl2br(
                     '<form action="?thread_id='.$thread_id.'" method="post">'.
                     '<textarea name="edit_op_text" rows="4" cols="50" >'.
-                    trim($op_text).'</textarea><br>'.
+                    htmlspecialchars_decode(trim($op_text)).'</textarea><br>'.
                     '<div class="error" id="op_error">'.$op_error.'</div><br>'.
                     '<input type="submit" value="Submit" name="submit_edit_op">'.
                     '</form>');
@@ -217,7 +217,7 @@
                     echo nl2br(
                         '<form action="?thread_id='.$thread_id.'&editSubmitted&edited_post_id='.$comment_array_row[0].'" method="post">'.
                         '<textarea name="edit_text" rows="4" cols="50" >'.
-                        trim($edit_text).'</textarea><br>'.
+                        htmlspecialchars_decode(trim($edit_text)).'</textarea><br>'.
                         '<div class="error" id="edit_comment_error">'.$edit_comment_error.'</div><br>'.
                         '<input type="submit" value="Submit" name="submit_edit">'.
                         '</form>');}
@@ -227,7 +227,7 @@
         ?>
         <br><br>
         <form action="?thread_id=<?php echo $thread_id ?>&<?php echo $_SERVER["PHP_SELF"] ?>" method="post">
-            <textarea name="comment_text" rows="4" cols="50" placeholder="Add comment"><?php echo htmlentities($comment_text) ?></textarea><br>
+            <textarea name="comment_text" rows="4" cols="50" placeholder="Add comment"><?php echo $comment_text ?></textarea><br>
             <div class="error" id="comment_error"><?php echo ($comment_error) ?></div><br>
             <input type="submit" value="Submit" name="submit"><br>        
         </form>
