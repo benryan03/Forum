@@ -7,11 +7,14 @@
 
     date_default_timezone_set("America/New_York");
     $timestamp = date("m/d/Y h:ia");
+
     $comment_text = "";
     $comment_error = "";
+    $edit_comment_error = "";
+
     $edit_op_text = "";
     $op_error = " ";
-    $errorStatus = false;
+    $errorStatus = null;
     $opErrorStatus = false;
     $opEditSubmitted = false;
 
@@ -22,10 +25,6 @@
     $serverName = "localhost\sqlexpress";
     $connectionInfo = array("Database"=>"Forum", "UID"=>"ben", "PWD"=>"password123");
     $conn = sqlsrv_connect($serverName, $connectionInfo);
-
-    //For editing comments
-    if (isset($_GET['editClicked'])){
-        $post_id = $_GET['post_id'];}
 
     if (!empty($_POST['submit'])){//When new comment is submitted
 
@@ -92,10 +91,10 @@
 
         //Validate edit
         if ($edit_text == ""){
-            $comment_error = "Error: Comment cannot be empty";
+            $edit_comment_error = "Error: Comment cannot be empty";
             $errorStatus = true;}
         if (strlen($edit_text) > 1000){
-            $comment_error = "Error: Maximum length 1000 characters (current: ".strlen($edit_text).")";
+            $edit_comment_error = "Error: Maximum length 1000 characters (current: ".strlen($edit_text).")";
             $errorStatus = true;}
 
         if ($errorStatus == false){ //Write edit to database
@@ -189,7 +188,7 @@
                 //Define edit link for each comment, with individual comment ID
                 $editLink = "";
                 if ($_SESSION["loggedInUser"] == trim($comment_array_row[3])){
-                    $editLink = " | <a href='?thread_id=$thread_id&post_id=$comment_array_row[0]&editClicked=true'>Edit</a>";}
+                    $editLink = " | <a href='?thread_id=$thread_id&editClicked&edited_post_id=$comment_array_row[0]'>Edit</a>";}
 
                 //Display comment metadata
                 echo nl2br(
@@ -207,12 +206,18 @@
                 //Still need to make sure that correct user has clicked the edit link
 
                 //If edit link has been clicked, display text box to edit comment
-                if (isset($_GET['post_id']) && $_GET['post_id'] == $comment_array_row[0] && isset($_GET['editClicked'])){
-                    echo nl2br(
-                        '<form action="?thread_id='.$thread_id.'&edited_post_id='.$comment_array_row[0].'" method="post">'.
+                if (
+                    (isset($_GET['editClicked']) or $errorStatus == true) &&
+                    //isset($_GET['post_id']) && 
+                    $_GET['edited_post_id'] == $comment_array_row[0]
+                    
+                    ){
+                    
+                        echo nl2br(
+                        '<form action="?thread_id='.$thread_id.'&editSubmitted&edited_post_id='.$comment_array_row[0].'" method="post">'.
                         '<textarea name="edit_text" rows="4" cols="50" >'.
                         htmlentities(trim($comment_array_row[2])).'</textarea><br>'.
-                        '<div class="error" id="comment_error">'.$comment_error.'</div><br>'.
+                        '<div class="error" id="edit_comment_error">'.$edit_comment_error.'</div><br>'.
                         '<input type="submit" value="Submit" name="submit_edit">'.
                         '</form>');}
                 else{
