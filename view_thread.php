@@ -9,15 +9,13 @@
     $timestamp = date("m/d/Y h:ia");
 
     $comment_text = "";
-    $comment_error = "";
-    //$edit_text = "";
+    $comment_error = ""; //new comment error
     $edit_comment_error = "";
+    $errorStatus = null;
 
     $edit_op_text = "";
     $op_error = " ";
-    $errorStatus = null;
-    $opErrorStatus = false;
-    $opEditSubmitted = false;
+    $opErrorStatus = null;
 
     //Get thread ID from previous link
     $thread_id = $_GET['thread_id'];
@@ -67,7 +65,7 @@
 
     if (!empty($_POST['submit_edit_op'])){ //When OP edit is submitted
 
-        //Retrieve and sanitize the edit
+        //Retrieve the edit
         $op_text = $_POST['edit_op_text'];
 
         //Validate edit
@@ -78,10 +76,10 @@
             $op_error = "Error: Maximum length 1000 characters (current: ".strlen($op_text).")";
             $opErrorStatus = true;}
 
-        if ($opErrorStatus == false){ //Write edit to database
-            $opEditSubmitted = true;
+        if ($opErrorStatus == null){ //Write edit to database
             $editOPQuery = "UPDATE threads SET op_text = '$op_text', time_updated = '$timestamp', edited_status = '1' WHERE thread_id = '$thread_id'";
-            $writeToDatabase = sqlsrv_query($conn, $editOPQuery);}
+            $writeToDatabase = sqlsrv_query($conn, $editOPQuery);
+            $opErrorStatus = false;}
     }
 
     if (!empty($_POST['submit_edit'])){ //When comment edit is submitted
@@ -157,21 +155,23 @@
             //Still need to make sure that correct user has clicked the edit link
 
             //If edit link has been clicked, display text box to edit comment
-            if (isset($_GET['editOPClicked']) && $opEditSubmitted == false || $opErrorStatus == true){   
+            if (isset($_GET['editOPClicked']) || $opErrorStatus == true){   
                 
                 //If comment did not pass validation, keep it in text box
                 if (isset($_POST['edit_op_text'])){
                     $op_text = $_POST['edit_op_text'];}
 
                 echo nl2br(
-                    '<form <action="?thread_id='.$thread_id.'&editOPSubmitted" method="post">'.
+                    '<form action="?thread_id='.$thread_id.'" method="post">'.
                     '<textarea name="edit_op_text" rows="4" cols="50" >'.
                     trim($op_text).'</textarea><br>'.
                     '<div class="error" id="op_error">'.$op_error.'</div><br>'.
                     '<input type="submit" value="Submit" name="submit_edit_op">'.
-                    '</form>');}
+                    '</form>');
+            }
             else{
-                echo nl2br(trim($thread_array[3])."\n\n");}   
+                echo nl2br(trim($thread_array[3])."\n\n");
+            }   
         ?>
     </div>
  
@@ -208,7 +208,6 @@
                 //Still need to make sure that correct user has clicked the edit link
 
                 //If edit link has been clicked, display text box to edit comment
-                
                 if ((isset($_GET['editClicked']) or $errorStatus == true) && $_GET['edited_post_id'] == $comment_array_row[0]){
                     
                     //If comment did not pass validation, keep it in text box
