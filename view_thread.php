@@ -10,6 +10,7 @@
 
     $comment_text = "";
     $comment_error = "";
+    //$edit_text = "";
     $edit_comment_error = "";
 
     $edit_op_text = "";
@@ -67,7 +68,7 @@
     if (!empty($_POST['submit_edit_op'])){ //When OP edit is submitted
 
         //Retrieve and sanitize the edit
-        $op_text = htmlspecialchars($_POST['edit_op_text']);
+        $op_text = $_POST['edit_op_text'];
 
         //Validate edit
         if ($op_text == ""){
@@ -160,12 +161,12 @@
                 
                 //If comment did not pass validation, keep it in text box
                 if (isset($_POST['edit_op_text'])){
-                    $op_text = htmlspecialchars($_POST['edit_op_text']);}
+                    $op_text = $_POST['edit_op_text'];}
 
                 echo nl2br(
                     '<form <action="?thread_id='.$thread_id.'&editOPSubmitted" method="post">'.
                     '<textarea name="edit_op_text" rows="4" cols="50" >'.
-                    htmlentities(trim($op_text)).'</textarea><br>'.
+                    trim($op_text).'</textarea><br>'.
                     '<div class="error" id="op_error">'.$op_error.'</div><br>'.
                     '<input type="submit" value="Submit" name="submit_edit_op">'.
                     '</form>');}
@@ -184,6 +185,7 @@
             //Display each comment
             for ($x = 1; $x < $posts_count + 1; $x++){
                 $comment_array_row = sqlsrv_fetch_array($comments_array, SQLSRV_FETCH_NUMERIC); //Select next row                
+                $edit_text = $comment_array_row[2];
 
                 //Define edit link for each comment, with individual comment ID
                 $editLink = "";
@@ -206,17 +208,17 @@
                 //Still need to make sure that correct user has clicked the edit link
 
                 //If edit link has been clicked, display text box to edit comment
-                if (
-                    (isset($_GET['editClicked']) or $errorStatus == true) &&
-                    //isset($_GET['post_id']) && 
-                    $_GET['edited_post_id'] == $comment_array_row[0]
+                
+                if ((isset($_GET['editClicked']) or $errorStatus == true) && $_GET['edited_post_id'] == $comment_array_row[0]){
                     
-                    ){
-                    
-                        echo nl2br(
+                    //If comment did not pass validation, keep it in text box
+                    if (isset($_POST['edit_text'])){
+                        $edit_text = $_POST['edit_text'];}
+
+                    echo nl2br(
                         '<form action="?thread_id='.$thread_id.'&editSubmitted&edited_post_id='.$comment_array_row[0].'" method="post">'.
                         '<textarea name="edit_text" rows="4" cols="50" >'.
-                        htmlentities(trim($comment_array_row[2])).'</textarea><br>'.
+                        trim($edit_text).'</textarea><br>'.
                         '<div class="error" id="edit_comment_error">'.$edit_comment_error.'</div><br>'.
                         '<input type="submit" value="Submit" name="submit_edit">'.
                         '</form>');}
