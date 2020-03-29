@@ -22,6 +22,14 @@
     //Get thread ID from previous link
     $thread_id = $_GET['thread_id'];
 
+    //Get edited post ID from previous link, if it exists
+    if (isset($_GET['edited_post_id'])){
+        $edited_post_id = $_GET['edited_post_id'];}
+    else{
+        $edited_post_id = "";
+    }
+
+
     //Connect to database
     $serverName = "localhost\sqlexpress";
     $connectionInfo = array("Database"=>"Forum", "UID"=>"ben", "PWD"=>"password123");
@@ -88,7 +96,6 @@
 
         //Retrieve and sanitize the edit
         $edit_text = htmlspecialchars($_POST['edit_text']);
-        $edited_post_id = $_GET['edited_post_id'];
 
         //Validate edit
         if ($edit_text == ""){
@@ -208,7 +215,7 @@
 
                 //If logged in user is the author of the post (protects against URL editing)
                 //and  edit link has been clicked, display text box to edit comment
-                if ($loggedInUser == trim($thread_array[4]) && (isset($_GET['editClicked']) || $errorStatus == true) && $_GET['edited_post_id'] == $comment_array_row[0]){
+                if ($loggedInUser == trim($thread_array[4]) && (isset($_GET['editClicked']) || $errorStatus == true) && $edited_post_id == $comment_array_row[0]){
                     
                     //If comment did not pass validation, keep it in text box
                     if (isset($_POST['edit_text'])){
