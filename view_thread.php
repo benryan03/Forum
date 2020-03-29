@@ -5,6 +5,8 @@
     if (!isset($_SESSION["loggedInUser"])){
         $_SESSION["loggedInUser"] = "None";}
 
+    $loggedInUser = $_SESSION["loggedInUser"];
+
     date_default_timezone_set("America/New_York");
     $timestamp = date("m/d/Y h:ia");
 
@@ -120,7 +122,7 @@
         <a href="register.php">Register</a>&nbsp;
         <a href="login.php">Log in</a>&nbsp;
         <a href="new_thread.php">New thread</a>&nbsp;
-        Current user: <?php echo $_SESSION["loggedInUser"] ?>&nbsp;
+        Current user: <?php echo $loggedInUser ?>&nbsp;
         <a href="logout.php">Log out</a>
     </div>
 
@@ -134,7 +136,7 @@
 
             //Define edit link for OP
             $editLink = "";
-            if ($_SESSION["loggedInUser"] == trim($thread_array[4])){
+            if ($loggedInUser == trim($thread_array[4])){
                 $editLink = " | <a href='?thread_id=$thread_id&editOPClicked'>Edit</a>";}
 
             //Display thread OP
@@ -152,10 +154,9 @@
             else{
                 echo "</h2>";}
 
-            //Still need to make sure that correct user has clicked the edit link
-
-            //If edit link has been clicked, display text box to edit comment
-            if (isset($_GET['editOPClicked']) || $opErrorStatus == true){   
+            //If logged in user is the author of the post (protects against URL editing)
+            //and edit link has been clicked, display text box to edit OP
+            if ($loggedInUser == trim($thread_array[4]) && isset($_GET['editOPClicked']) || $opErrorStatus == true){   
                 
                 //If comment did not pass validation, keep it in text box
                 if (isset($_POST['edit_op_text'])){
@@ -189,7 +190,7 @@
 
                 //Define edit link for each comment, with individual comment ID
                 $editLink = "";
-                if ($_SESSION["loggedInUser"] == trim($comment_array_row[3])){
+                if ($loggedInUser == trim($comment_array_row[3])){
                     $editLink = " | <a href='?thread_id=$thread_id&editClicked&edited_post_id=$comment_array_row[0]'>Edit</a>";}
 
                 //Display comment metadata
@@ -205,10 +206,9 @@
                 else{
                     echo "</h2>";}
 
-                //Still need to make sure that correct user has clicked the edit link
-
-                //If edit link has been clicked, display text box to edit comment
-                if ((isset($_GET['editClicked']) or $errorStatus == true) && $_GET['edited_post_id'] == $comment_array_row[0]){
+                //If logged in user is the author of the post (protects against URL editing)
+                //and  edit link has been clicked, display text box to edit comment
+                if ($loggedInUser == trim($thread_array[4]) && (isset($_GET['editClicked']) || $errorStatus == true) && $_GET['edited_post_id'] == $comment_array_row[0]){
                     
                     //If comment did not pass validation, keep it in text box
                     if (isset($_POST['edit_text'])){
