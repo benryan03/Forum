@@ -6,6 +6,8 @@ if (!isset($_SESSION["loggedInUser"])){
     $_SESSION["loggedInUser"] = "None";
 }
 
+$loggedInUser = $_SESSION["loggedInUser"];
+
 $thread_title = "";
 $thread_text = "";
 $title_error = "";
@@ -77,11 +79,11 @@ if (!empty($_POST["submit"])){
     </div>
 
     <div class="options">
-        <a href="register.php">Register</a>&nbsp;
-        <a href="login.php">Log in</a>&nbsp;
-        <a href="new_thread.php">New thread</a>&nbsp;
-        Current user: <?php echo $_SESSION["loggedInUser"] ?>&nbsp;
-        <a href="logout.php">Log out</a>
+        <?php if ($loggedInUser == "None"){echo '<a href="register.php">Register</a>&nbsp;';} ?>
+        <?php if ($loggedInUser == "None"){echo '<a href="login.php">Log in</a>&nbsp;';} ?>
+        <?php if ($loggedInUser != "None"){echo '<a href="new_thread.php">New thread</a>&nbsp;';} ?>
+        Current user: <?php echo $loggedInUser ?>&nbsp;
+        <?php if ($loggedInUser != "None"){echo '<a href="logout.php">Log out</a>';} ?>
     </div>
 
     <div class="content">

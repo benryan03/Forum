@@ -29,7 +29,6 @@
         $edited_post_id = "";
     }
 
-
     //Connect to database
     $serverName = "localhost\sqlexpress";
     $connectionInfo = array("Database"=>"Forum", "UID"=>"ben", "PWD"=>"password123");
@@ -126,11 +125,11 @@
     </div>
 
     <div class="options">
-        <a href="register.php">Register</a>&nbsp;
-        <a href="login.php">Log in</a>&nbsp;
-        <a href="new_thread.php">New thread</a>&nbsp;
+        <?php if ($loggedInUser == "None"){echo '<a href="register.php">Register</a>&nbsp;';} ?>
+        <?php if ($loggedInUser == "None"){echo '<a href="login.php">Log in</a>&nbsp;';} ?>
+        <?php if ($loggedInUser != "None"){echo '<a href="new_thread.php">New thread</a>&nbsp;';} ?>
         Current user: <?php echo $loggedInUser ?>&nbsp;
-        <a href="logout.php">Log out</a>
+        <?php if ($loggedInUser != "None"){echo '<a href="logout.php">Log out</a>';} ?>
     </div>
 
     <div class="op">
