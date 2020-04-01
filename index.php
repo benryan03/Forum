@@ -62,9 +62,7 @@ $loggedInUser = $_SESSION["loggedInUser"];
                     '<div class="complete_thread"><span class="thread_title">'."<a href='view_thread.php?thread_id=$thread_array[0]'>$threadTitle</a></span><span class='thread_details'>replies: $thread_array[5] by: <a href='view_user.php?selectedUser=$thread_array[4]'>$thread_array[4]</a></span>
                     </div>"
                 );
-
             }
-            print_r(sqlsrv_errors());
         ?>
     </div>
 

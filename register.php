@@ -83,16 +83,12 @@ if (!empty($_POST["submit"])){                  //if submit button clicked, then
         if (!$writeToDatabase){
             $errorStatus = true;
             $submitError = "Error writing to database.";
-            //print_r(sqlsrv_errors());
         }
         if ($errorStatus == false){
             //Open success page
             header("Location:register_success.php");
         }
-
-
     }
-    //print_r(sqlsrv_errors());
 }
 
 ?>
