@@ -108,8 +108,6 @@
             $editPostQuery = "UPDATE posts SET post_text = '$edit_text', date_updated = '$timestamp', edited_status = '1' WHERE post_id = '$edited_post_id'";
             $writeToDatabase = sqlsrv_query($conn, $editPostQuery);}
     }
-
-    print_r(sqlsrv_errors()); //Print SQL errors if any occur - I still need to move this into an error div
 ?>
 
 <html>
